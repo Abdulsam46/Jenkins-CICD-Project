@@ -1,80 +1,131 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Spring Boot Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <title>Service Health Dashboard</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
         body {
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-            height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top, #1f3a40, #0b1c20);
             color: #e5e7eb;
         }
-        .glass {
-            background: rgba(255,255,255,0.08);
-            backdrop-filter: blur(12px);
+
+        .container {
+            max-width: 900px;
+            margin: 80px auto;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.04);
             border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
         }
+
+        h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            margin-top: 6px;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .card {
+            padding: 24px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+        }
+
+        .label {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #9ca3af;
+            margin-bottom: 8px;
+        }
+
+        .value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #e5e7eb;
+        }
+
+        .mono {
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 18px;
+        }
+
         .status {
             color: #22c55e;
-            font-weight: bold;
+            letter-spacing: 0.12em;
+            font-weight: 700;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 12px;
+            color: #9ca3af;
         }
     </style>
 </head>
 
-<body class="d-flex align-items-center justify-content-center">
-
+<body>
 <div class="container">
-    <div class="col-md-8 mx-auto">
-        <div class="glass p-5 shadow-lg">
 
-            <h2 class="text-center mb-4">
-                <i class="bi bi-speedometer2"></i>
-                Java Spring Boot Dashboard
-            </h2>
+    <h1>Service Health Dashboard</h1>
+    <div class="subtitle">Live runtime status of the application</div>
 
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <div class="glass p-4">
-                        <h6>Hostname</h6>
-                        <p th:text="${hostname}"></p>
-                    </div>
-                </div>
+    <div class="grid">
 
-                <div class="col-md-6">
-                    <div class="glass p-4">
-                        <h6>Server Time</h6>
-                        <p th:text="${time}"></p>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="glass p-4">
-                        <h6>Environment</h6>
-                        <p th:text="${environment}"></p>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="glass p-4">
-                        <h6>Status</h6>
-                        <p class="status" th:text="${status}"></p>
-                    </div>
-                </div>
-            </div>
-
-            <hr class="my-4">
-
-            <p class="text-center text-secondary">
-                Java 17 · Spring Boot · Jenkins · Docker · CI/CD
-            </p>
-
+        <div class="card">
+            <div class="label">Hostname</div>
+            <div class="value mono" th:text="${hostname}">ip-xxxx</div>
         </div>
-    </div>
-</div>
 
+        <div class="card">
+            <div class="label">Server Time (UTC)</div>
+            <div class="value"
+                 th:text="${#temporals.format(time, 'HH:mm:ss')}">--:--:--</div>
+            <div class="subtitle"
+                 th:text="${#temporals.format(time, 'dd MMM yyyy')}">--</div>
+        </div>
+
+        <div class="card">
+            <div class="label">Environment</div>
+            <div class="value" th:text="${environment}">EC2</div>
+        </div>
+
+        <div class="card">
+            <div class="label">Status</div>
+            <div class="value status">
+                ● <span th:text="${status}">RUNNING</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        Runtime: Java 17 · Spring Boot<br/>
+        Delivery: Jenkins · Docker · CI/CD
+    </div>
+
+</div>
 </body>
 </html>

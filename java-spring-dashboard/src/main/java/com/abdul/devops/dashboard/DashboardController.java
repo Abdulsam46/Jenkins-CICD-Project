@@ -5,25 +5,43 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.net.InetAddress;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.ZoneId;
 
 @Controller
 public class DashboardController {
 
-    @GetMapping("/")
-    public String dashboard(Model model) throws Exception {
+    private static final String DEFAULT_ENVIRONMENT = "EC2 / Bare Metal";
+    private static final String STATUS_RUNNING = "RUNNING";
 
-        String hostname = InetAddress.getLocalHost().getHostName();
-        String environment = System.getenv().getOrDefault(
-                "ENVIRONMENT",
-                "EC2 / Bare Metal"
-        );
+    private final String hostname;
+    private final String environment;
+
+    public DashboardController() {
+        this.hostname = resolveHostname();
+        this.environment = resolveEnvironment();
+    }
+
+    @GetMapping("/")
+    public String dashboard(Model model) {
 
         model.addAttribute("hostname", hostname);
-        model.addAttribute("time", LocalDateTime.now());
+        model.addAttribute("time", ZonedDateTime.now(ZoneId.of("UTC")));
         model.addAttribute("environment", environment);
-        model.addAttribute("status", "RUNNING");
+        model.addAttribute("status", STATUS_RUNNING);
 
         return "dashboard";
+    }
+
+    private String resolveHostname() {
+        try {
+            return InetAddress.getLocalHost().getHostName();
+        } catch (Exception e) {
+            return "unknown-host";
+        }
+    }
+
+    private String resolveEnvironment() {
+        return System.getenv().getOrDefault("ENVIRONMENT", DEFAULT_ENVIRONMENT);
     }
 }
