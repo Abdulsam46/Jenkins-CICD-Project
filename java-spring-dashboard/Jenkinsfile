@@ -1,0 +1,77 @@
+pipeline {
+  agent {
+    docker {
+      image 'abdul46/maven-docker-agent:v1'
+      args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
+    }
+  }
+
+  stages {
+
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Build and Test') {
+      steps {
+        sh '''
+          cd java-spring-dashboard
+          mvn clean package
+        '''
+      }
+    }
+
+    stage('Static Code Analysis') {
+      environment {
+        SONAR_URL = "http://34.195.20.40:9000"
+      }
+      steps {
+        withCredentials([string(credentialsId: 'sonar', variable: 'SONAR_AUTH_TOKEN')]) {
+          sh '''
+            cd java-spring-dashboard
+            mvn sonar:sonar \
+              -Dsonar.login=$SONAR_AUTH_TOKEN \
+              -Dsonar.host.url=${SONAR_URL}
+          '''
+        }
+      }
+    }
+
+    stage('Build and Push Docker Image') {
+      environment {
+        DOCKER_IMAGE = "abdul46/spring-boot-dashboard:${BUILD_NUMBER}"
+      }
+      steps {
+        script {
+          sh '''
+            cd java-spring-dashboard
+            docker build -t ${DOCKER_IMAGE} .
+          '''
+          docker.withRegistry('https://index.docker.io/v1/', 'docker-cred') {
+            docker.image("${DOCKER_IMAGE}").push()
+          }
+        }
+      }
+    }
+
+    stage('Update Deployment File') {
+      steps {
+        withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+          sh '''
+            git config user.email "abdul@test.com"
+            git config user.name "Abdul"
+
+            sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" \
+              spring-boot-app-manifests/deployment.yml
+
+            git add spring-boot-app-manifests/deployment.yml
+            git commit -m "Update image to ${BUILD_NUMBER}"
+            git push https://${GITHUB_TOKEN}@github.com/Abdulsam46/Jenkins-CICD-Project.git HEAD:main
+          '''
+        }
+      }
+    }
+  }
+}
