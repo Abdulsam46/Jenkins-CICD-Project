@@ -1,12 +1,22 @@
-# CI/CD Pipeline for Java Spring Boot Application
+# CI/CD and GitOps Pipeline for Java Spring Boot Application
 
-<img width="1712" height="887" alt="image" src="https://github.com/user-attachments/assets/c3191c50-fcfb-4921-a9a9-014bcf5f893a" />
+<img width="1658" height="885" alt="image" src="https://github.com/user-attachments/assets/65d12383-0f7a-4775-9f71-98c20f423881" />
+
 
 
 
 <br>
 <br>
 
-End-to-end CI/CD pipeline built with Jenkins for automated builds and deployments.  
-SonarQube enforces static code analysis and quality gates during the build stage.  
-The application is containerized and deployed to Kubernetes via Argo CD, following GitOps principles for continuous delivery.
+- Jenkins for automated build and CI orchestration
+- SonarQube integrated for static code analysis and quality gates
+- Docker used to build and push versioned application images
+- Kubernetes used as the runtime orchestration platform
+- Argo CD enables GitOps-based continuous deployment by syncing manifests from Git
+
+
+
+
+### Pipeline Flow
+
+Code Commit → Jenkins Build → SonarQube Scan → Docker Image Build & Push → Git Manifest Update → Argo CD Sync → Kubernetes Deployment
