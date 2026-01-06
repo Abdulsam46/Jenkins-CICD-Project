@@ -19,7 +19,7 @@ spec:
           image: abdul46/spring-boot-dashboard:replaceImageTag
           imagePullPolicy: Always
           ports:
-            - containerPort: 8080
+            - containerPort: 8082
           env:
             - name: ENVIRONMENT
               value: "Kubernetes Cluster"
