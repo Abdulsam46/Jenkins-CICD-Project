@@ -3,6 +3,20 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 End-to-end CI/CD pipeline implemented using Jenkins for automated builds and deployments. 
 SonarQube is integrated for static code analysis and quality enforcement. 
 The application is containerized and deployed to a Kubernetes cluster using Argo CD, following GitOps principles for continuous delivery.
