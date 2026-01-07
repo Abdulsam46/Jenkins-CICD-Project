@@ -70,7 +70,7 @@ pipeline {
           git config user.name "Abdul"
 
           cd java-spring-dashboard/spring-boot-app-manifests/
-          sed -i "s/replaceImageTag/latest/g" deployment.yml
+          sed -i "s/latest/latest/g" deployment.yml
 
           git add deployment.yml
           git commit -m "Update image to ${BUILD_NUMBER}"
