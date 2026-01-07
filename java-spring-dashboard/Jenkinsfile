@@ -41,7 +41,7 @@ pipeline {
 
     stage('Build and Push Docker Image') {
       environment {
-        DOCKER_IMAGE = "abdul46/spring-boot-dashboard:${BUILD_NUMBER}"
+        DOCKER_IMAGE = "abdul46/spring-boot-dashboard:latest"
       }
       steps {
         script {
@@ -63,7 +63,7 @@ pipeline {
             git config user.email "abdul@test.com"
             git config user.name "Abdul"
 
-            sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" \
+            sed -i "s/replaceImageTag/latest/g" \
               spring-boot-app-manifests/deployment.yml
 
             git add spring-boot-app-manifests/deployment.yml
