@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: spring-boot-dashboard
-          image: abdul46/spring-boot-dashboard:replaceImageTag
+          image: abdul46/spring-boot-dashboard:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8082
