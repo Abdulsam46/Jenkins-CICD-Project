@@ -57,26 +57,20 @@ pipeline {
     }
 
     stage('Update Deployment File') {
-	  environment {
-        GIT_REPO_NAME = "Jenkins-CICD-Project"
-        GIT_USER_NAME = "Abdulsam46"
-      }
+      agent any
       steps {
-        withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
         dir(env.WORKSPACE) {
-        sh '''
-          git config --global --add safe.directory "$WORKSPACE"
-          git config user.email "abdul@test.com"
-          git config user.name "Abdul"
+          sh '''
+            git config user.email "abdul@test.com"
+            git config user.name "Abdul"
 
-          cd java-spring-dashboard/spring-boot-app-manifests/
-          sed -i "s/replaceImageTag/latest/g" deployment.yml
+            sed -i "s|image: .*|image: abdul46/spring-boot-dashboard:${BUILD_NUMBER}|" \
+              java-spring-dashboard/spring-boot-app-manifests/deployment.yml
 
-          git add deployment.yml
-          git commit -m "Update image to ${BUILD_NUMBER}"
-          git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git HEAD:main
-        '''
-         }
+            git add java-spring-dashboard/spring-boot-app-manifests/deployment.yml
+            git commit -m "Update image to ${BUILD_NUMBER}"
+            git push origin main
+          '''
         }
       }
     }
